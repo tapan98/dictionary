@@ -12,6 +12,7 @@ class MeaningsDisplay extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       itemCount: meanings.length,
+      // prototypeItem: Tex,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(8.0),

@@ -13,24 +13,26 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
   }
 
   void searchWord(String word) {
+    if (word == "") return;
     if (kDebugMode) print("Searching for $word");
     state = AsyncValue.data(fetchDefinition(word));
   }
 
   // methods to update
   Future<Word?> fetchDefinition(String? word) async {
-    var url = (word == null)
-        ? Uri.http('localhost:8000', '/example.json')
-        : Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
-    var response = await http.get(url).onError((error, stackTrace) {
+    if (word == null) return null;
+    var uri = Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
+    var response = await http.get(uri).onError((error, stackTrace) {
       throw AsyncError<SocketException>("No connection", StackTrace.current);
     });
+    print("Response was: ${response.body}");
     final json = convert.jsonDecode(response.body);
+    print("json: $json");
 
     Map<String, dynamic> data = json[0] ?? json;
     if (data.containsKey('title') &&
         json['title'] as String == "No Definitions Found") {
-      return null;
+      return Word(word: "", meanings: []);
     }
     List<Meaning> meanings = [];
 

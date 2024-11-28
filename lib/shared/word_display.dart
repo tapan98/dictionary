@@ -21,30 +21,33 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data != null) {
-              // display data
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      snapshot.data!.word,
-                      style: const TextStyle(
-                          fontSize: 25.0, fontWeight: FontWeight.bold),
+              if (snapshot.data!.word == "") {
+                return const Center(child: Text("Please check word/spelling"));
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        snapshot.data!.word,
+                        style: const TextStyle(
+                            fontSize: 25.0, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Expanded(
-                    child: MeaningsDisplay(
-                      meanings: snapshot.data!.meanings,
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  ),
-                ],
-              );
+                    Expanded(
+                      child: MeaningsDisplay(
+                        meanings: snapshot.data!.meanings,
+                      ),
+                    ),
+                  ],
+                );
+              }
             } else if (snapshot.data == null) {
-              // No definition
-              return const Center(child: Text("Please check word/spelling"));
+              return const Center(
+                  child: Text("Use searchbar to lookup a word"));
             } else if (snapshot.error.runtimeType ==
                 AsyncError<SocketException>) {
               return const Center(
