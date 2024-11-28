@@ -6,13 +6,7 @@ class DisplaySynonyms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        itemCount: synonyms.length,
-        itemBuilder: (context, index) {
-          return Text(formatSynonyms());
-        });
+    return Text(formatSynonyms());
   }
 
   String formatSynonyms() {
