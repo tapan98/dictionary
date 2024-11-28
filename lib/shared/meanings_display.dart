@@ -1,4 +1,5 @@
 import 'package:dictionary/models/word.dart';
+import 'package:dictionary/shared/antonyms_display.dart';
 import 'package:dictionary/shared/definitions_display.dart';
 import 'package:dictionary/shared/synonyms_display.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +28,29 @@ class MeaningsDisplay extends StatelessWidget {
                       meanings[index].partOfSpeech,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
                   ),
                   DefinitionsDisplay(definitions: meanings[index].definitions),
                   if (meanings[index].synonyms.isNotEmpty)
-                    const Text("Synonyms: "),
-                  DisplaySynonyms(synonyms: meanings[index].synonyms),
+                    const Text(
+                      "Synonyms: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DisplaySynonyms(synonyms: meanings[index].synonyms),
+                  ),
+                  if (meanings[index].antonyms.isNotEmpty)
+                    const Text(
+                      "Antonyms: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DisplayAntonyms(antonyms: meanings[index].antonyms),
+                  ),
                 ],
               ),
             ),
