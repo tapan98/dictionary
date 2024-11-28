@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dictionary/models/word.dart';
 import 'package:dictionary/providers/word_provider.dart';
 import 'package:dictionary/shared/meanings_display.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,28 @@ class WordDisplay extends ConsumerStatefulWidget {
 }
 
 class _WordDisplayState extends ConsumerState<WordDisplay> {
+  Widget displayWord(Word data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Text(
+            data.word,
+            style: const TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Expanded(
+          child: MeaningsDisplay(
+            meanings: data.meanings,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final word = ref.watch(wordNotiferProvider);
@@ -20,44 +43,28 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
         future: word.value,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            // parse snapshot
             if (snapshot.hasData && snapshot.data != null) {
-              if (snapshot.data!.word == "") {
-                return const Center(child: Text("Please check word/spelling"));
-              } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Text(
-                        snapshot.data!.word,
-                        style: const TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Expanded(
-                      child: MeaningsDisplay(
-                        meanings: snapshot.data!.meanings,
-                      ),
-                    ),
-                  ],
-                );
-              }
+              // searched for something
+              return (snapshot.data!.word == "")
+                  ? const Center(child: Text("Please check word/spelling"))
+                  : displayWord(snapshot.data!);
             } else if (snapshot.data == null) {
               return const Center(
-                  child: Text("Use searchbar to lookup a word"));
+                child: Text("Use searchbar to lookup a word"),
+              );
             } else if (snapshot.error.runtimeType ==
                 AsyncError<SocketException>) {
               return const Center(
-                  child: Text(
-                      "Failed to connect to the Dictionary API\nPlease check your internet"));
+                child: Text(
+                    "Failed to connect to the Dictionary API\nPlease check your internet"),
+              );
             } else if (snapshot.hasError) {
               // error
               return Center(
-                  child: Text(
-                      "Something went wrong!\n${snapshot.error}\nType: ${snapshot.error.runtimeType}"));
+                child: Text(
+                    "Something went wrong!\n${snapshot.error}\nType: ${snapshot.error.runtimeType}"),
+              );
             }
           }
 

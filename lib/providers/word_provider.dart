@@ -9,70 +9,96 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
   // init
   @override
   Future<Word?> build() async {
-    return await fetchDefinition(null);
-  }
-
-  void searchWord(String word) {
-    if (word == "") return;
-    if (kDebugMode) print("Searching for $word");
-    state = AsyncValue.data(fetchDefinition(word));
+    return await _fetchDefinition(null);
   }
 
   // methods to update
-  Future<Word?> fetchDefinition(String? word) async {
+  void searchWord(String word) {
+    if (word == "") return;
+    if (kDebugMode) print("Searching for $word");
+    state = AsyncValue.data(_fetchDefinition(word));
+  }
+
+  Future<Word?> _fetchDefinition(String? word) async {
     if (word == null) return null;
-    var uri = Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
-    var response = await http.get(uri).onError((error, stackTrace) {
-      throw AsyncError<SocketException>("No connection", StackTrace.current);
-    });
-    print("Response was: ${response.body}");
+    http.Response response = await _getResponse(word);
+
     final json = convert.jsonDecode(response.body);
-    print("json: $json");
 
     Map<String, dynamic> data = json[0] ?? json;
+
+    // No Definitions check
     if (data.containsKey('title') &&
         json['title'] as String == "No Definitions Found") {
       return Word(word: "", meanings: []);
     }
+
+    List<Meaning> meanings = _parseJson(data);
+
+    return Word(word: data['word'], meanings: meanings);
+  }
+
+  Future<http.Response> _getResponse(String word) async {
+    var uri = Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
+    return await http.get(uri).onError((error, stackTrace) {
+      throw AsyncError<SocketException>("No connection", StackTrace.current);
+    });
+  }
+
+  List<Meaning> _parseJson(Map<String, dynamic> data) {
     List<Meaning> meanings = [];
 
     // list of meanings
     for (Map<String, dynamic> meaning in data['meanings']) {
       // get part of speechDefinition
       String partOfSpeech = meaning['partOfSpeech'];
-      List<String> synonyms = [];
-      List<String> antonyms = [];
 
-      List<Definition> defs = [];
       // get synonyms
-      for (String synonym in meaning['synonyms']) {
-        synonyms.add(synonym);
-      }
+      List<String> synonyms = _getSynonyms(meaning);
 
       // get antonyms
-      for (String antonym in meaning['antonyms']) {
-        antonyms.add(antonym);
-      }
+      List<String> antonyms = _getAntonyms(meaning);
 
       // get definitions
-      for (Map<String, dynamic> definition in meaning['definitions']) {
-        defs.add(Definition(
-          definition: definition['definition'].toString(),
-          example: (definition.containsKey('example'))
-              ? definition['example']
-              : null,
-        ));
-      }
+      List<Definition> definitions = _getDefinitions(meaning);
 
       // create Meaning object
       meanings.add(Meaning(
         partOfSpeech: partOfSpeech,
-        definitions: defs,
+        definitions: definitions,
         synonyms: synonyms,
         antonyms: antonyms,
       ));
     }
-    return Word(word: data['word'], meanings: meanings);
+    return meanings;
+  }
+
+  List<Definition> _getDefinitions(Map<String, dynamic> meaning) {
+    List<Definition> definitions = [];
+    for (Map<String, dynamic> definition in meaning['definitions']) {
+      definitions.add(Definition(
+        definition: definition['definition'].toString(),
+        example:
+            (definition.containsKey('example')) ? definition['example'] : null,
+      ));
+    }
+    return definitions;
+  }
+
+  List<String> _getSynonyms(Map<String, dynamic> meaning) {
+    List<String> synonyms = [];
+    for (String synonym in meaning['synonyms']) {
+      synonyms.add(synonym);
+    }
+    return synonyms;
+  }
+
+  List<String> _getAntonyms(Map<String, dynamic> meaning) {
+    List<String> antonyms = [];
+    for (String antonym in meaning['antonyms']) {
+      antonyms.add(antonym);
+    }
+    return antonyms;
   }
 }
 
