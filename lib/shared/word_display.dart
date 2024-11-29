@@ -43,12 +43,7 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
                       child: Text(
                           "No Definitions Found!\nPlease check word/spelling"))
                   : displayWord(snapshot.data!);
-            } else if (snapshot.data == null) {
-              return const Center(
-                child: Text("Use searchbar to lookup a word"),
-              );
-            } else if (snapshot.error.runtimeType ==
-                AsyncError<SocketException>) {
+            } else if (snapshot.error.runtimeType == SocketException) {
               return const Center(
                 child: Text(
                     "Failed to connect to the Dictionary API\nPlease check your internet"),
@@ -58,6 +53,10 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
               return Center(
                 child: Text(
                     "Something went wrong!\n${snapshot.error}\nType: ${snapshot.error.runtimeType}"),
+              );
+            } else if (snapshot.data == null) {
+              return const Center(
+                child: Text("Use searchbar to lookup a word"),
               );
             }
           }

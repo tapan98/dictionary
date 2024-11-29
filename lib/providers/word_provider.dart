@@ -13,10 +13,13 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
   }
 
   // methods to update
-  void searchWord(String word) {
+  void searchWord(String word) async {
     if (word == "") return;
     if (kDebugMode) print("Searching for $word");
-    state = AsyncValue.data(_fetchDefinition(word));
+
+    state = await AsyncValue.guard(() async {
+      return _fetchDefinition(word);
+    });
   }
 
   Future<Word?> _fetchDefinition(String? word) async {
@@ -40,8 +43,10 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
 
   Future<http.Response> _getResponse(String word) async {
     var uri = Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
+    // var uri = Uri.http('localhost', '/api/v2/entries/en/$word');
+
     return await http.get(uri).onError((error, stackTrace) {
-      throw AsyncError<SocketException>("No connection", StackTrace.current);
+      throw const SocketException("No connection");
     });
   }
 
