@@ -17,18 +17,10 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-          child: Text(
-            data.word,
-            style: const TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
         Expanded(
           child: MeaningsDisplay(
             meanings: data.meanings,
+            title: data.word,
           ),
         ),
       ],
@@ -47,7 +39,9 @@ class _WordDisplayState extends ConsumerState<WordDisplay> {
             if (snapshot.hasData && snapshot.data != null) {
               // searched for something
               return (snapshot.data!.word == "")
-                  ? const Center(child: Text("Please check word/spelling"))
+                  ? const Center(
+                      child: Text(
+                          "No Definitions Found!\nPlease check word/spelling"))
                   : displayWord(snapshot.data!);
             } else if (snapshot.data == null) {
               return const Center(

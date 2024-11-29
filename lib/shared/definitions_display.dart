@@ -16,13 +16,29 @@ class DefinitionsDisplay extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("${index + 1}. ${definitions[index].definition}"),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${index + 1}. "),
+                  Expanded(
+                    child: Text(
+                      definitions[index].definition,
+                      textAlign: TextAlign.left,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
+              ),
               if (definitions[index].example != null)
-                Text(
-                  "    Example: ${definitions[index].example}",
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text(
+                    "Example: ${definitions[index].example}",
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
             ],

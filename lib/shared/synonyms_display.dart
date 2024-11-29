@@ -6,7 +6,16 @@ class DisplaySynonyms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(formatSynonyms());
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Synonyms: ",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(formatSynonyms()),
+      ],
+    );
   }
 
   String formatSynonyms() {

@@ -12,36 +12,62 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final searchController = SearchController();
+  final serachFocusNode = FocusNode();
 
   @override
   void dispose() {
     super.dispose();
     searchController.dispose();
+    serachFocusNode.dispose();
+  }
+
+  Widget searchButton() {
+    return IconButton(onPressed: () {}, icon: const Icon(Icons.search));
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SearchBar(
-              hintText: "Search",
-              onSubmitted: (value) {
-                ref
-                    .read(wordNotiferProvider.notifier)
-                    .searchWord(searchController.text);
-              },
-              controller: searchController,
+        appBar: AppBar(
+          toolbarHeight: 90.0,
+          title: SearchBar(
+            hintText: "Search",
+            onSubmitted: (value) {
+              ref
+                  .read(wordNotiferProvider.notifier)
+                  .searchWord(searchController.text);
+            },
+            onTapOutside: (event) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            controller: searchController,
+          ),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (value) {
+                  switch (value) {
+                    case _popupMenuSettings:
+                      () {};
+                    default:
+                  }
+                },
+                itemBuilder: (context) => [
+                      const PopupMenuItem(
+                          value: _popupMenuSettings, child: Text("Settings")),
+                    ]),
+          ],
+        ),
+        body: const Column(
+          children: [
+            Expanded(
+              child: WordDisplay(),
             ),
-          ),
-          const Expanded(
-            child: WordDisplay(),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
     );
   }
+
+  static const int _popupMenuSettings = 0;
 }

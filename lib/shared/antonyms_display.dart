@@ -6,7 +6,16 @@ class DisplayAntonyms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(formatAntonyms());
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Antonyms: ",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(formatAntonyms()),
+      ],
+    );
   }
 
   String formatAntonyms() {
