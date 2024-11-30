@@ -16,15 +16,8 @@ class MeaningsDisplay extends ConsumerStatefulWidget {
 }
 
 class _MeaningsDisplayState extends ConsumerState<MeaningsDisplay> {
-  final _searchController = SearchController();
-
   @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
-
-  Widget customScrollView() {
+  Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
         SliverList(
@@ -34,54 +27,8 @@ class _MeaningsDisplayState extends ConsumerState<MeaningsDisplay> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    if (index == 0)
-                      ListTile(
-                        title: Center(
-                          child: Text(
-                            widget.title,
-                            style: const TextStyle(
-                                fontSize: 30.0, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    Card(
-                      elevation: 2.0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // part of speech
-                            ListTile(
-                              title: Text(
-                                widget.meanings[index].partOfSpeech,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            DefinitionsDisplay(
-                                definitions:
-                                    widget.meanings[index].definitions),
-                            // synonyms
-                            if (widget.meanings[index].synonyms.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DisplaySynonyms(
-                                    synonyms: widget.meanings[index].synonyms),
-                              ),
-                            // antonyms
-                            if (widget.meanings[index].antonyms.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DisplayAntonyms(
-                                    antonyms: widget.meanings[index].antonyms),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    if (index == 0) _displayTitle(),
+                    _displayMeanings(index),
                   ],
                 ),
               );
@@ -93,8 +40,73 @@ class _MeaningsDisplayState extends ConsumerState<MeaningsDisplay> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return customScrollView();
+  ListTile _displayTitle() {
+    return ListTile(
+      title: Center(
+        child: Text(
+          widget.title,
+          style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
+
+  Card _displayMeanings(int index) {
+    return Card(
+      elevation: 2.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // part of speech
+            _displayPartOfSpeech(index),
+            DefinitionsDisplay(definitions: widget.meanings[index].definitions),
+            // synonyms
+            if (widget.meanings[index].synonyms.isNotEmpty)
+              _displaySynonyms(index),
+            // antonyms
+            if (widget.meanings[index].antonyms.isNotEmpty)
+              _displayAntonyms(index),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ListTile _displayPartOfSpeech(int index) {
+    return ListTile(
+      title: Text(
+        widget.meanings[index].partOfSpeech,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+  Padding _displaySynonyms(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DisplaySynonyms(synonyms: widget.meanings[index].synonyms),
+    );
+  }
+
+  Padding _displayAntonyms(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DisplayAntonyms(
+        antonyms: widget.meanings[index].antonyms,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+  }
+
+  final _searchController = SearchController();
 }
