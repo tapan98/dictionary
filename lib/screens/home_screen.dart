@@ -1,4 +1,5 @@
 import 'package:dictionary/providers/word_provider.dart';
+import 'package:dictionary/shared/about.dart';
 import 'package:dictionary/shared/fetch_word.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,15 +52,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       PopupMenuButton<int>(
         onSelected: (value) {
           switch (value) {
-            case _popupMenuSettings:
-              () {};
-            default:
+            case _popupMenuAbout:
+              showAboutDialog(
+                context: context,
+                applicationVersion: About.version,
+                applicationName: About.name,
+                applicationIcon: const FlutterLogo(),
+                children: About.aboutDialogText(),
+              );
           }
         },
-        itemBuilder: (context) => [
-          const PopupMenuItem(
-              value: _popupMenuSettings, child: Text("Settings")),
-        ],
+        itemBuilder: (context) =>
+            [const PopupMenuItem(value: _popupMenuAbout, child: Text("About"))],
       ),
     ];
   }
@@ -73,5 +77,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   final searchController = SearchController();
   final serachFocusNode = FocusNode();
-  static const int _popupMenuSettings = 0;
+  static const int _popupMenuAbout = 0;
 }
