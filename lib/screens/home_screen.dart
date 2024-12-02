@@ -14,14 +14,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 90.0,
-          title: _displaySearchBar(),
-          actions: _createPopupMenus(),
-        ),
-        body: const Column(
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 90.0,
+        title: _displaySearchBar(),
+        actions: _createPopupMenus(),
+      ),
+      body: SafeArea(
+        child: const Column(
           children: [
             Expanded(
               child: FetchWord(),
