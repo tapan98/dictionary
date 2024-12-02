@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class About {
   static const String version = '0.1.0';
@@ -19,22 +17,7 @@ class About {
 
   static List<Widget> aboutDialogText() {
     return [
-      RichText(
-        text: TextSpan(children: [
-          const TextSpan(text: "Uses ", style: TextStyle(color: Colors.black)),
-          TextSpan(
-              text: "Free Dictionary API",
-              style: const TextStyle(color: Colors.blue),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  _launchUrl(Uri.parse("https://dictionaryapi.dev/"));
-                }),
-        ]),
-      ),
+      const Text("Uses Free Dictionary API"),
     ];
-  }
-
-  static Future<void> _launchUrl(Uri url) async {
-    await launchUrl(url);
   }
 }
