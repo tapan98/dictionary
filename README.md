@@ -1,3 +1,5 @@
 # dictionary
 
-A new Flutter project.
+A Dictionary app based on Flutter framework
+
+Uses [Free Dictionary API](https://dictionaryapi.dev/)
