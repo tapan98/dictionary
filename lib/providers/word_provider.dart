@@ -45,7 +45,10 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
     var uri = Uri.http('api.dictionaryapi.dev', '/api/v2/entries/en/$word');
     // var uri = Uri.http('localhost', '/api/v2/entries/en/$word');
 
-    return await http.get(uri).onError((error, stackTrace) {
+    return await http
+        .get(uri)
+        .timeout(const Duration(seconds: 10))
+        .onError((error, stackTrace) {
       throw const SocketException("No connection");
     });
   }
