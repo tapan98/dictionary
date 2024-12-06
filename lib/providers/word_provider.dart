@@ -14,7 +14,6 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
 
   // methods to update
   void searchWord(String word) async {
-    if (word == "") return;
     if (kDebugMode) print("Searching for $word");
 
     state = await AsyncValue.guard(() async {
@@ -23,7 +22,7 @@ class WordNotifer extends AsyncNotifier<Future<Word?>> {
   }
 
   Future<Word?> _fetchDefinition(String? word) async {
-    if (word == null) return null;
+    if (word == null || word.isEmpty) return null;
     http.Response response = await _getResponse(word);
 
     final json = convert.jsonDecode(response.body);
