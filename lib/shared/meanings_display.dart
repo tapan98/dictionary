@@ -1,4 +1,4 @@
-import 'package:dictionary/models/word.dart';
+import 'package:dictionary/models/meaning.dart';
 import 'package:dictionary/shared/antonyms_display.dart';
 import 'package:dictionary/shared/definitions_display.dart';
 import 'package:dictionary/shared/synonyms_display.dart';

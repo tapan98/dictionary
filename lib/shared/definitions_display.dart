@@ -1,4 +1,4 @@
-import 'package:dictionary/models/word.dart';
+import 'package:dictionary/models/definition.dart';
 import 'package:flutter/material.dart';
 
 class DefinitionsDisplay extends StatelessWidget {

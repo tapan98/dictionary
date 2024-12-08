@@ -18,7 +18,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         toolbarHeight: 90.0,
         title: _displaySearchBar(),
-        actions: _createPopupMenus(),
+        actions: _createPopupMenus(context),
       ),
       body: SafeArea(
         child: const Column(
@@ -47,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  List<Widget> _createPopupMenus() {
+  List<Widget> _createPopupMenus(BuildContext context) {
     return [
       PopupMenuButton<int>(
         onSelected: (value) {
